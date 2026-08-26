@@ -9,19 +9,34 @@ right_image = cv2.imread("dataset/im0/im1.png", cv2.IMREAD_GRAYSCALE)
 print("Left image shape:", left_image.shape)
 print("Right image shape:", right_image.shape)
 
-# StereoBM parameters
-num_disparities = 272                # Multiples of 16
-block_size = 15                      # Odd number
-
 # Create StereoBM matcher
-stereo = cv2.StereoBM_create(
-    numDisparities=num_disparities,
-    blockSize=block_size
-)
+stereo = cv2.StereoBM_create(numDisparities=272,blockSize=15)
 
 # Compute disparity map
 disparity = stereo.compute(left_image, right_image)
 print("Disparity map shape:", disparity.shape)
+
+# Calibration parameters from calib.txt
+fx = 3979.911
+baseline = 193.001
+doffs = 124.343
+
+# Calculate depth from disparity
+def calculate_depth(disparity_value):
+    depth = (fx * baseline) / (disparity_value + doffs)
+    return depth
+
+# Select a pixel
+x = 1500
+y = 1000
+
+disparity_value = disparity[y, x] / 16.0
+
+depth = calculate_depth(disparity_value)
+
+print("Pixel:", (x, y))
+print("Disparity:", disparity_value)
+print("Depth:", depth, "mm")
 
 # Normalize disparity for visualization
 disparity_normalized = cv2.normalize(disparity,None,0,255,cv2.NORM_MINMAX,cv2.CV_8U)
