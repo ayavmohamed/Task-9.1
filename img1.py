@@ -6,6 +6,9 @@ import cv2 as cv
 left_image = cv.imread("dataset/img1/im0.png", cv.IMREAD_GRAYSCALE)
 right_image = cv.imread("dataset/img1/im1.png", cv.IMREAD_GRAYSCALE)
 
+# Load left image for RGB colors
+left_color = cv.imread("dataset/img1/im0.png")
+
 # Print image information
 print("Left image shape:", left_image.shape)
 print("Right image shape:", right_image.shape)
@@ -36,8 +39,19 @@ X = (x_coords - cx) * Z / fx                # Calculate 3D coordinates
 Y = (y_coords - cy) * Z / fy
 
 points_3d = np.column_stack((X, Y, Z))       # Store 3D points as N x 3 array
-
 print("3D points shape:", points_3d.shape)
+
+
+# Get RGB colors from the original left image
+colors = left_color[y_coords, x_coords]
+
+# OpenCV stores colors as BGR, so convert to RGB
+colors = colors[:, ::-1]
+
+# Combine 3D coordinates with RGB colors
+points_3d_rgb = np.column_stack((points_3d, colors))
+
+print("Colored 3D points shape:", points_3d_rgb.shape)
 
 # Save point cloud as PLY
 def save_ply(filename, points):
@@ -48,17 +62,23 @@ def save_ply(filename, points):
         file.write("property float x\n")
         file.write("property float y\n")
         file.write("property float z\n")
+        file.write("property uchar red\n")
+        file.write("property uchar green\n")
+        file.write("property uchar blue\n")
         file.write("end_header\n")
 
         for point in points:
             file.write(
                 f"{point[0]:.3f} "
                 f"{point[1]:.3f} "
-                f"{point[2]:.3f}\n"
+                f"{point[2]:.3f} "
+                f"{int(point[3])} "
+                f"{int(point[4])} "
+                f"{int(point[5])}\n"
             )
 
 # Use fewer points for easier visualization
-points_for_ply = points_3d[::5]
+points_for_ply = points_3d_rgb[::5]
 
 save_ply("point_cloud_img1.ply", points_for_ply)
 print("Points saved to PLY:", len(points_for_ply))
