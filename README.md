@@ -61,6 +61,7 @@ Lesson learned: Next time, I will try to think of simpler alternatives before ch
 ## Point Cloud Video
 
 I recorded a short video showing the reconstructed 3D scene:
- Video link: [https://drive.google.com/file/d/1fnzuZxABTvJ5vHgvR5wCgtt-i_Xxrstg/view?usp=sharing]
+
+Video link: [https://drive.google.com/file/d/1fnzuZxABTvJ5vHgvR5wCgtt-i_Xxrstg/view?usp=sharing]
 
 
