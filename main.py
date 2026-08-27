@@ -51,10 +51,17 @@ def save_ply(filename, points):
         file.write("end_header\n")
 
         for point in points:
-            file.write(f"{point[0]} {point[1]} {point[2]}\n")
+            file.write(
+                f"{point[0]:.3f} "
+                f"{point[1]:.3f} "
+                f"{point[2]:.3f}\n"
+            )
 
-save_ply("point_cloud_im0.ply", points_3d)
+# Use fewer points for easier visualization
+points_for_ply = points_3d[::5]
 
+save_ply("point_cloud_im0.ply", points_for_ply)
+print("Points saved to PLY:", len(points_for_ply))
 print("Point cloud saved as point_cloud_im0.ply")
 
 # Calculate depth from disparity
